@@ -1,0 +1,2 @@
+# mycollection
+Generic Java Collection
