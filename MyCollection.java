@@ -3,10 +3,12 @@ package mycollection;
 public class MyCollection<T> {
     private ListNode<T> head;
     private ListNode<T> tail;
+    private int index;
 
     MyCollection(){
         head = new ListNode<T>();
         tail = head;
+        index = -1;
     }
 
     MyCollection(T newValue){
@@ -15,28 +17,34 @@ public class MyCollection<T> {
     }
 
     public void add(T newValue){
-        if(newValue != null && tail.arrIndex > 14){
-            ListNode<T> newNode = new ListNode<>(newValue);
+        if(newValue != null && index % 16 > 14){
+            ListNode<T> newNode = new ListNode<>();
+            index++;
+            newNode.arr[index % 16] = newValue;
             tail.next = newNode;
-            int newIndex = tail.nodeIndex + 1;
             tail = newNode;
-            tail.nodeIndex = newIndex;
         }
         else if (newValue != null){
-            tail.add(newValue);
+            index++;
+            tail.arr[index % 16] = newValue;
         }
     }
 
-    public T get(int index){
-        int newNodeIndex = index / 16;
-        int newArrIndex = index % 16;
+    public T get(int otherIndex){
+        int otherNodeIndex = otherIndex / 16;
+        int otherArrIndex = otherIndex % 16;
 
-        if(index >= 0 && (tail.nodeIndex > newNodeIndex || (tail.nodeIndex == newNodeIndex && tail.arrIndex >= newArrIndex))){
+        int currNodeIndex = index / 16;
+        int currArrIndex = index % 16;
+
+        if(otherIndex >= 0 && (currNodeIndex > otherNodeIndex || (currNodeIndex == otherNodeIndex && currArrIndex >= otherArrIndex))){
             ListNode<T> node = head;
-            while(newNodeIndex != node.nodeIndex){
+            int counter = otherNodeIndex;
+            while(counter != 0){
                 node = node.next;
+                counter--;
             }
-            return node.arr[newArrIndex];
+            return node.arr[otherArrIndex];
         }
         return head.arr[0];
     }
@@ -45,27 +53,16 @@ public class MyCollection<T> {
         return head.arr[0];
     }
 
+    public int getSize(){
+        return index + 1;
+    }
+
     private class ListNode<T>{
         private T[] arr;
-        private int arrIndex;
-        private int nodeIndex;
         private ListNode<T> next;
 
         ListNode(){
             arr = (T[]) new Object[16];
-            arrIndex = -1;
-            nodeIndex = 0;
-            next = null;
-        }
-
-        ListNode(T newValue){
-            this();
-            arr[++arrIndex] = newValue;
-        }
-
-        private void add(T newValue){
-            arr[++arrIndex] = newValue;
         }
     }
 }
-
